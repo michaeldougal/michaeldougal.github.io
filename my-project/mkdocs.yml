@@ -1,8 +1,5 @@
-site_name: Michael Dougal
-site_url: https://michaeldougal.github.io/
-nav:
-    - Home: index.md
-    - About: about.md
+site_name: order.
+site_url: https://michaeldougal.github.io/order
 theme:
   name: material
   logo: icon.svg
@@ -22,3 +19,8 @@ theme:
       toggle:
         icon: material/brightness-3
         name: Switch to light mode
+nav:
+    - Home: 'index.md'
+    - Getting started: 'gettingstarted.md'
+    - Rules: 'rules.md'
+    - API: 'api.md'

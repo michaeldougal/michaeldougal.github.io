@@ -1,17 +1,9 @@
-# Welcome to MkDocs
+# 
+![order.](banner.png)
+<p style="text-align: center;">A module loading framework for Roblox created by <a href=profileredirect>@ChiefWildin</a>.</p>
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## What's so special about Order?
+The purpose of Order is to simplify the way you structure your game projects. It combines the best features of the most popular frameworks, and adds a few of its own.
 
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Are there any unique features in Order?
+One of the main goals I wanted to achieve with Order was the ability to have modules with circular dependencies. I've achieved this through a little bait-and-switch style tactic, and it is now fully compatible with these kinds of modules!
