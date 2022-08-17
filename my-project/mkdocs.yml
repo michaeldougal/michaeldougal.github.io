@@ -2,7 +2,7 @@ site_name: order.
 site_url: https://michaeldougal.github.io/order
 theme:
   name: material
-  logo: icon.svg
+  logo: icon_square.png
   palette: 
     # Palette toggle for light mode
     - scheme: default
