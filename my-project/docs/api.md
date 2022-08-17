@@ -4,6 +4,8 @@
 
 ### Tasks
 Tasks are modules that have code intended for immediate execution at runtime. This code should be placed in a function called `:Init()`. Tasks should be placed in the `tasks` folder of the appropriate context.
+!!! note
+    The `:Init()` function is called asynchronously. This means that it is an ideal location to put any `:WaitForChild()` calls, as these will not slow down the initialization of other modules in your project.
 #### Example
 ```lua
 local NewTask = {}

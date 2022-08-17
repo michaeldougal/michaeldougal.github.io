@@ -1,6 +1,6 @@
 # 
 ![order.](banner.png)
-<p style="text-align: center;">A module loading framework for Roblox created by <a href=profileredirect>@ChiefWildin</a>.</p>
+<p style="text-align: center;">A module loading framework for Roblox created by <a href=PLACEHOLDER>@ChiefWildin</a></p>
 
 ## What's so special about Order?
 The purpose of Order is to simplify the way you structure your game projects. It combines the best features of the most popular frameworks, and adds a few of its own.

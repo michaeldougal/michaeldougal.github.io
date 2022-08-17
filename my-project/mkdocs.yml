@@ -24,3 +24,8 @@ nav:
     - Getting started: 'gettingstarted.md'
     - Rules: 'rules.md'
     - API: 'api.md'
+    - Included modules: 'included.md'
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
