@@ -16,6 +16,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://michaeldougal.github.io/order/included/</loc>
+         <lastmod>2022-08-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://michaeldougal.github.io/order/rules/</loc>
          <lastmod>2022-08-17</lastmod>
          <changefreq>daily</changefreq>
