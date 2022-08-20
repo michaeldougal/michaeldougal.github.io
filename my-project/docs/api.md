@@ -7,12 +7,12 @@ Tasks are modules that have code intended for immediate execution at runtime. Th
 !!! info
     Any module that is placed inside the `tasks` folder will be loaded by default, even if no `:Init()` function exists within it or if it isn't even a table. All other modules are loaded only by request.
 #### Priorities
-If you wish to give a task priority during the initialization phase, set a `Priority` key in the main module table to the priority level you would like. Setting a priority is optional - if you don't set one, the task will be set to the lowest priority.
+If you wish to give a task priority during the initialization phase, set a `Priority` key in the main module table to the priority level you would like (higher values load first, negative values load after default). Setting a priority is optional - if you don't set one, the task will be set to the lowest priority.
 !!! warning
     Tasks with priorities are still initialized asynchronously, so if the task yields during initialization there is no guarantee that it will finish before a lower priority task starts initializing. Tasks with the same priority are initialized in an arbitrary order.
 #### Example
 ```lua
-local NewTask = {}
+local NewTask = {Priority = 5}
 
 function NewTask:Init()
 	print("We're running a task!")
@@ -22,7 +22,7 @@ return NewTask
 ```
 
 ### Everything else
-All other modules should be placed in the `lib` folder, or any other custom folders that you create. Note that by default, Order will only recognize top-level modules in a folder, but those can be buried as many folders deep as you'd like.
+All other modules can be placed in the provided `lib` folder or any other custom folders that you create.
 
 ### File paths
 There are three top-level directories by default:
