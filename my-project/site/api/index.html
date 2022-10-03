@@ -548,18 +548,18 @@
 <h3 id="everything-else">Everything else</h3>
 <p>All other modules can be placed in the provided <code>lib</code> folder or any other custom folders that you create.</p>
 <h3 id="file-paths">File paths</h3>
-<p>There are three top-level directories by default:</p>
+<p>There are five top-level directories by default:</p>
 <ul>
+<li><code>character</code> - StarterPlayer.StarterCharacterScripts</li>
 <li><code>client</code> - StarterPlayer.StarterPlayerScripts</li>
+<li><code>first</code> - ReplicatedFirst</li>
 <li><code>server</code> - ServerScriptService</li>
 <li><code>shared</code> - ReplicatedStorage.Common</li>
 </ul>
-<p>Order also supports two other top-level directories, if you wish to create/use them:</p>
-<ul>
-<li><code>first</code> - ReplicatedFirst</li>
-<li><code>character</code> - StarterPlayer.StarterCharacterScripts</li>
-</ul>
-<p>Note that these two optional directories are not scanned for modules. If you wish to do so, you may add custom support in the default client or server script. For Rojo users, further file path customization can be configured in the <code>default.project.json</code> file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>first</code> and <code>character</code> are not scanned for task modules. If you wish to do so, you may add custom support in the default client or server script. For Rojo users, further file path customization can be configured in the <code>default.project.json</code> file.</p>
+</div>
 <h2 id="loading-dependencies">Loading dependencies</h2>
 <p>Order makes use of the <code>shared</code> global variable to load dependencies. In code, this takes the place of the usual <code>require</code> keyword. This function can take either a string of the module's name, a string of a partial or complete path to the module, or a direct object reference to a ModuleScript.
 Valid examples:
@@ -567,15 +567,21 @@ Valid examples:
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="s2">&quot;lib/Tweentown&quot;</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Common&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;lib&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Tweentown&quot;</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">lib</span><span class="p">.</span><span class="n">Tweentown</span><span class="p">)</span>
 </code></pre></div></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>When two or more modules exist with the same name or partial path, Order will warn you that it found multiple modules for your request, and will ask you to be more specific. You can use any level of the module paths it provides you with, as long as it is unique.</p>
 </div>
+<p>As of v0.5.0, you can also now use the Order module in place of <code>shared</code> if you have other uses for that keyword, or want to avoid globals like the plague. For example:
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
+</code></pre></div></p>
 <h3 id="supporting-modules-from-other-frameworks">Supporting modules from other frameworks</h3>
-<p>If you would like to import a module from another framework that uses <code>require</code> to load dependencies, simply add the following line to the beginning of the file:
+<p>If you would like to import a module from another framework that uses <code>require</code> to load dependencies, simply redirect <code>require</code> to <code>shared</code>:
 <div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="n">shared</span>
+</code></pre></div>
+Or, alternatively, you can redirect their require call to the main Order module:
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
 </code></pre></div></p>
 
 
