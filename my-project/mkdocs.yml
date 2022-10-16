@@ -23,13 +23,25 @@ theme:
       toggle:
         icon: material/brightness-3
         name: Switch to light mode
+extra_css:
+  - stylesheets/extra.css
 nav:
     - Home: 'index.md'
     - Getting started: 'gettingstarted.md'
-    - Special notes: 'notes.md'
     - API: 'api.md'
-    - Included modules: 'included.md'
+    - Special notes: 'notes.md'
+    - Branches / Modules: 'included.md'
+    - Contributions: 'contributions.md'
 markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+extra:
+  social:
+    - icon: fontawesome/brands/twitter 
+      link: https://twitter.com/chiefwildin
+    - icon: fontawesome/brands/github
+      link: https://github.com/michaeldougal/order
+    - icon: fontawesome/brands/roblox
+      link: https://www.roblox.com/library/11152308855/
+copyright: Copyright &copy; 2022 - Michael Dougal
