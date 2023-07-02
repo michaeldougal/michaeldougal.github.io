@@ -30,7 +30,6 @@ nav:
     - Getting started: 'gettingstarted.md'
     - API: 'api.md'
     - Special notes: 'notes.md'
-    - Branches / Modules: 'included.md'
     - Contributions: 'contributions.md'
 markdown_extensions:
   - admonition
@@ -42,6 +41,6 @@ extra:
       link: https://twitter.com/chiefwildin
     - icon: fontawesome/brands/github
       link: https://github.com/michaeldougal/order
-    - icon: fontawesome/brands/roblox
-      link: https://www.roblox.com/library/11152308855/
-copyright: Copyright &copy; 2022 - Michael Dougal
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/QvZ66Pw
+copyright: Copyright &copy; 2023 - Michael Dougal
