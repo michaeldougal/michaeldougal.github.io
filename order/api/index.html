@@ -325,8 +325,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#synchronization" class="md-nav__link">
-    Synchronization
+  <a href="#initialization-functions-and-synchronization" class="md-nav__link">
+    Initialization functions and synchronization
   </a>
   
 </li>
@@ -413,21 +413,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../included/" class="md-nav__link">
-        Branches / Modules
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../contributions/" class="md-nav__link">
         Contributions
       </a>
@@ -492,8 +477,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#synchronization" class="md-nav__link">
-    Synchronization
+  <a href="#initialization-functions-and-synchronization" class="md-nav__link">
+    Initialization functions and synchronization
   </a>
   
 </li>
@@ -569,42 +554,45 @@
 
 <h1 id="api">API</h1>
 <h2 id="settings">Settings</h2>
-<p>The main framework module (found in <code>src/shared/Order/init.lua</code>) has a few different settings that developers can tweak for their projects.</p>
+<p>The framework settings module (located at <code>src/_order/Settings.lua</code>) has a few different options that developers can customize for their projects.</p>
 <ul>
 <li><code>DebugMode</code> - When set to <code>true</code> this will make the loading process verbose so that you can iterate on the framework or tweak behavior.</li>
 <li><code>SilentMode</code> - When set to <code>true</code> this will disable all regular output (version printing, notifications about when initialization has finished, etc.) This will not disable warnings. By default this is turned off during Studio development, and turned on for production.</li>
-<li><code>ForceSyncInit</code> - When set to <code>true</code>, forces the task initialization process to be performed synchronously regardless of individual task settings.</li>
-<li><code>SlowInitWarnTime</code> - The numbers of seconds that Order will wait before warning you that a task is taking too long to initialize.</li>
+<li><code>InitOrder</code> - Can be set to either <code>"Project"</code> or <code>"Individual"</code>. Project means that each initialization function will be run on every task before moving on to the next initialization function. Individual means that each task will run through each of its initialization functions before moving on to the next task. Both settings respect module priority values.</li>
+<li><code>InitFunctionConfig</code> - A table that defines the initialization functions for the project and their options.</li>
+<li><code>PortableMode</code> - An experimental setting that allows Order to run in a portable mode where it does not assume it is the main or only framework in the game. This is intended for use with plugins or other small scope projects and will require a custom project structure.</li>
 </ul>
 <hr />
 <h2 id="file-structure">File structure</h2>
 <h3 id="tasks">Tasks</h3>
-<p>Tasks are modules that have code intended for immediate execution at runtime. This code should be placed in a function called <code>:Init()</code>, which is called asynchronously and automatically. Tasks should be placed in the <code>tasks</code> folder of the appropriate context.</p>
+<p>Tasks are modules that have code intended for immediate execution at runtime. Tasks should be placed in the <code>tasks</code> folder of the appropriate context.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Any module that is placed inside the <code>tasks</code> folder will be loaded by default, even if no <code>:Init()</code> function exists within it or if it isn't even a table. All other modules are loaded only by request.</p>
+<p>Any module that is placed inside the <code>tasks</code> folder will be loaded by default, even if no initialization function exists within it or if it isn't even a table. All other modules are loaded only as requested.</p>
 </div>
 <p><br></p>
 <h4 id="priorities">Priorities</h4>
-<p>If you wish to give a task priority during the initialization phase, set a <code>Priority</code> key in the main module table to the priority level you would like (higher values load first, negative values load after default). Setting a priority is optional - if you don't set one, the task will be set to the lowest priority.</p>
+<p>If you wish to give a task priority during the initialization phase, set a <code>Priority</code> key in the main module table to the priority level you would like (higher values load first, negative values load last). Setting a priority is optional - if you don't set one, the task will be set to priority 0 by default.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Tasks with priorities are still initialized asynchronously, so if the task yields during initialization there is no guarantee that it will finish before a lower priority task starts initializing. Tasks with the same priority are initialized in an arbitrary order.</p>
 </div>
 <p><br></p>
-<h4 id="synchronization">Synchronization</h4>
-<p>By default, tasks are initialized asynchronously. This means that if any task yields during its <code>:Init()</code> function, the next task in the initialization queue will begin to execute while it is doing so.</p>
-<p>This behavior can be modified in two ways. The first is by setting <code>Order.ForceSyncInit</code> to <code>true</code> (see <a href="#settings">Settings</a>), which forces all tasks to load synchronously, meaning that any yielding task will hold up the initialization queue. The second is by setting a <code>SyncInit</code> key to <code>true</code> in the main module table, which will tell Order to load that particular task synchronously. These settings can be useful for forcing a certain init order, but can slow down that stage at the same time.
+<h4 id="initialization-functions-and-synchronization">Initialization functions and synchronization</h4>
+<p>In the default configuration, tasks can place their code to execute into two initialization functions: <code>:Prep()</code> and <code>:Init()</code>. <code>:Prep()</code> comes first and is synchronous, and then <code>:Init()</code> comes after and is asynchronous. Tasks are not required to have either, and are allowed to define their own initialization functions if desired. These can be defined by placing a table called <code>InitConfigOverride</code> in the module table, following the same structure as is found for <code>InitFunctionConfig</code> in the <code>Settings.lua</code> file of the framework folder.
 <br>
 <br></p>
 <h4 id="example">Example</h4>
 <div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">NewTask</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">Priority</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="n">SyncInit</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
 <span class="p">}</span>
 
+<span class="kr">function</span> <span class="nc">NewTask</span><span class="p">:</span><span class="nf">Prep</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task is prepped.&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+<span class="n">s</span>
 <span class="kr">function</span> <span class="nc">NewTask</span><span class="p">:</span><span class="nf">Init</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We&#39;re running a task!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task is running!&quot;</span><span class="p">)</span>
 <span class="kr">end</span>
 
 <span class="kr">return</span> <span class="n">NewTask</span>
@@ -618,7 +606,7 @@
 <li><code>client</code> - StarterPlayer.StarterPlayerScripts</li>
 <li><code>first</code> - ReplicatedFirst</li>
 <li><code>server</code> - ServerScriptService</li>
-<li><code>shared</code> - ReplicatedStorage.Common</li>
+<li><code>shared</code> - ReplicatedStorage.Shared</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -628,26 +616,27 @@
 <h2 id="loading-dependencies">Loading dependencies</h2>
 <p>Order makes use of the <code>shared</code> global variable to load dependencies. In code, this takes the place of the usual <code>require</code> keyword. This function can take either a string of the module's name, a string of a partial or complete path to the module, or a direct object reference to a ModuleScript.
 Valid examples:
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="s2">&quot;Tweentown&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">AnimNation</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="s2">&quot;AnimNation&quot;</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="s2">&quot;lib/Tweentown&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">AnimNation</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="s2">&quot;lib/AnimNation&quot;</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">Tweentown</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">lib</span><span class="p">.</span><span class="n">Tweentown</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">AnimNation</span> <span class="o">=</span> <span class="n">shared</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Shared</span><span class="p">.</span><span class="n">lib</span><span class="p">.</span><span class="n">AnimNation</span><span class="p">)</span>
 </code></pre></div></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>When two or more modules exist with the same name or partial path, Order will warn you that it found multiple modules for your request, and will ask you to be more specific. You can use any level of the module paths it provides you with, as long as it is unique.</p>
 </div>
-<p>As of v0.5.0, you can also now use the Order module in place of <code>shared</code> if you have other uses for that keyword, or want to avoid globals like the plague. For example:
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
+<p>The Order module itself can also be used instead of <code>shared</code> if you have other uses for that keyword, want to avoid globals like the plague, or are running in portable mode. For example:
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Shared</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="supporting-modules-from-other-frameworks">Supporting modules from other frameworks</h3>
-<p>If you would like to import a module from another framework that uses <code>require</code> to load dependencies, simply redirect <code>require</code> to <code>shared</code>:
+<p>If you would like to import a module from another framework that uses <code>require</code> to load dependencies (such as Nevermore), simply redirect <code>require</code> to <code>shared</code>:
 <div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="n">shared</span>
 </code></pre></div>
 Or, alternatively, you can redirect their require call to the main Order module:
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Common</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
-</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="nb">require</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">).</span><span class="n">Shared</span><span class="p">.</span><span class="n">Order</span><span class="p">)</span>
+</code></pre></div>
+Also be sure to update your initializer configuration to support the module's intended initialization procedure (or adapt it to Order's, if preferred.)</p>
 
 
 
@@ -703,7 +692,7 @@ Or, alternatively, you can redirect their require call to the main Order module:
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2022 - Michael Dougal
+      Copyright &copy; 2023 - Michael Dougal
     </div>
   
   
@@ -739,13 +728,8 @@ Or, alternatively, you can redirect their require call to the main Order module:
       
       
     
-    <a href="https://www.roblox.com/library/11152308855/" target="_blank" rel="noopener" title="www.roblox.com" class="md-social__link">
-      <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 26.5.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 72 72" style="enable-background:new 0 0 72 72;" xml:space="preserve">
-<path d="M56.8,72L0,56.7L15.2,0l28.4,7.7L72,15.3L56.8,72z M46,30.3l-15.8-4.4L26,41.7l15.8,4.4L46,30.3z"/>
-</svg>
+    <a href="https://discord.gg/QvZ66Pw" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541ZM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241Zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241Z"/></svg>
     </a>
   
 </div>
