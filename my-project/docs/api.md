@@ -1,4 +1,4 @@
-# API
+# API - V2.0
 
 ## Settings
 The framework settings module (located at `src/_order/Settings.lua`) has a few different options that developers can customize for their projects.
